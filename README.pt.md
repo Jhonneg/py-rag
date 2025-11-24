@@ -1,50 +1,56 @@
-# RAG com Python, LangChain e Pinecone
+# RAG com Python, LangChain e Bancos de Dados Vetoriais
 
-Este projeto demonstra um pipeline de Retrieval Augmented Generation (RAG) usando Python. Ele carrega documentos de várias fontes, os divide em chunks` e os prepara para a vetorização (embedding) e armazenamento em um banco de dados vetorial Pinecone.
+Este projeto demonstra um pipeline de Retrieval Augmented Generantion (RAG) usando Python e LangChain. Ele carrega documentos de várias fontes, divide-os em partes gerenciáveis (chunks), cria embeddings vetoriais e os armazena em um banco de dados vetorial como Pinecone ou ChromaDB para recuperação eficiente.
 
 O projeto está estruturado em dois notebooks Jupyter principais:
--   [main.ipynb](main.ipynb): Responsável pelo carregamento de documentos (PDFs, DOCX, Wikipedia), divisão do texto em chunks e cálculo do custo de embedding.
--   [pinecone.ipynb](pinecone.ipynb): Gerencia a interação com o banco de dados vetorial Pinecone.
+
+-   [main.ipynb](main.ipynb): Lida com o carregamento de documentos (PDFs, DOCX, Wikipedia), divisão do texto, cálculo de custo de embedding e interação com um banco de dados vetorial ChromaDB.
+-   [pinecone.ipynb](pinecone.ipynb): Gerencia todas as interações com o banco de dados vetorial Pinecone, incluindo criação de índices, inserção de vetores, consultas e exclusão.
 
 ## Funcionalidades
 
--   Carrega documentos de arquivos PDF e DOCX locais.
--   Busca e carrega dados diretamente da Wikipedia.
--   Divide documentos em chunks (pedaços) gerenciáveis para processamento.
--   Calcula o custo estimado para criar embeddings usando os modelos da OpenAI.
--   Integra-se com o Pinecone para armazenamento e recuperação de vetores.
+-   **Carregamento de Documentos**: Carrega documentos de arquivos PDF locais.
+-   **Divisão de Texto**: Divide documentos em pedaços menores, adequados para embedding.
+-   **Embeddings Vetoriais**: Cria representações vetoriais de trechos de texto usando os modelos da OpenAI.
+-   **Estimativa de Custo**: Calcula o custo estimado para gerar os embeddings.
+-   **Armazenamento Vetorial**: Integra-se tanto com o [ChromaDB](https://www.trychroma.com/) quanto com o [Pinecone](https://www.pinecone.io/) para armazenamento e recuperação de vetores.
 
 ## Configuração
 
-1.  **Clonar o repositório**
+1.  **Clone o Repositório**
     ```sh
     git clone <url-do-repositorio>
     cd <nome-do-repositorio>
     ```
 
-2.  **Criar e ativar um ambiente virtual**
+2.  **Crie e Ative um Ambiente Virtual**
     ```sh
     python -m venv venv
-    source venv/bin/activate  # No Windows, use `venv\Scripts\activate`
+    source venv/bin/activate 
     ```
 
-3.  **Instalar dependências**
-    Os pacotes necessários são instalados diretamente a partir dos notebooks. Execute as células com `pip install` em [main.ipynb](main.ipynb) e [pinecone.ipynb](pinecone.ipynb).
+3.  **Instale as Dependências**
+    Instale os pacotes necessários executando as células de `pip install` dentro dos notebooks [main.ipynb](main.ipynb) e [pinecone.ipynb](pinecone.ipynb), ou instale-os a partir do arquivo `requirements.txt`:
+    ```sh
+    pip install -r requirements.txt
+    ```
 
 4.  **Variáveis de Ambiente**
-    Crie um arquivo `.env` na raiz do projeto e adicione suas chaves de API. Este arquivo é ignorado pelo Git.
+    Crie um arquivo `.env` na raiz do projeto e adicione suas chaves de API. Este arquivo está incluído no `.gitignore` e não será enviado para o repositório.
     ```
     # .env
-    PINECONE_API_KEY="sua_chave_api_do_pinecone"
-    OPENAI_API_KEY="sua_chave_api_da_openai" # Necessário para os embeddings
+    PINECONE_API_KEY="sua_chave_de_api_do_pinecone"
+    OPENAI_API_KEY="sua_chave_de_api_da_openai"
     ```
 
-5.  **Adicionar Documentos**
-    Coloque seus arquivos PDF ou DOCX no diretório `pdfs/`.
+5.  **Adicione os Documentos**
+    Coloque seus arquivos PDF dentro do diretório `pdfs/`.
 
 ## Uso
 
-1.  **Processar Documentos**: Abra e execute as células no [main.ipynb](main.ipynb) para carregar e dividir seus documentos. Você pode ver o número de chunks criados e o custo estimado do embedding.
+1.  **Processar Documentos e Usar o ChromaDB**:
+    Abra e execute as células no [main.ipynb](main.ipynb) para carregar os documentos, dividi-los em pedaços e armazenar os embeddings em um banco de dados local do ChromaDB.
+
 
 2.  **Gerenciar Banco de Dados Vetorial**: Abra e execute as células no [pinecone.ipynb](pinecone.ipynb) para configurar seu índice no Pinecone e (em um passo futuro) carregar os vetores dos documentos.
  
@@ -60,3 +66,5 @@ O projeto está estruturado em dois notebooks Jupyter principais:
 
 <img width="1829" height="279" alt="screenshot-2025-11-24_08-43-51" src="https://github.com/user-attachments/assets/b0a56913-6b3b-4f4a-829f-417c8eafce6e" />
 </div>
+
+
