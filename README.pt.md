@@ -62,9 +62,15 @@ O projeto está estruturado em dois notebooks Jupyter principais:
 
 <img width="1632" height="403" alt="screenshot-2025-11-24_08-39-35" src="https://github.com/user-attachments/assets/6c97cd02-cedd-4604-ac70-8fae90d66b8b" />
 
+**Respondendo perguntas especificas ao documento**
+
+<img width="1254" height="558" alt="image" src="https://github.com/user-attachments/assets/a0c67e43-243c-4993-ae53-37a83284810c" />
+
 **Historico do chat**
 
 <img width="1829" height="279" alt="screenshot-2025-11-24_08-43-51" src="https://github.com/user-attachments/assets/b0a56913-6b3b-4f4a-829f-417c8eafce6e" />
+
+
 </div>
 
 
