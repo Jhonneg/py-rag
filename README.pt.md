@@ -47,3 +47,16 @@ O projeto está estruturado em dois notebooks Jupyter principais:
 1.  **Processar Documentos**: Abra e execute as células no [main.ipynb](main.ipynb) para carregar e dividir seus documentos. Você pode ver o número de chunks criados e o custo estimado do embedding.
 
 2.  **Gerenciar Banco de Dados Vetorial**: Abra e execute as células no [pinecone.ipynb](pinecone.ipynb) para configurar seu índice no Pinecone e (em um passo futuro) carregar os vetores dos documentos.
+ 
+## Demo 
+<div align=center >
+    
+
+**Pergunda e resposta**
+
+<img width="1632" height="403" alt="screenshot-2025-11-24_08-39-35" src="https://github.com/user-attachments/assets/6c97cd02-cedd-4604-ac70-8fae90d66b8b" />
+
+**Historico do chat**
+
+<img width="1829" height="279" alt="screenshot-2025-11-24_08-43-51" src="https://github.com/user-attachments/assets/b0a56913-6b3b-4f4a-829f-417c8eafce6e" />
+</div>
