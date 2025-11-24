@@ -1,6 +1,6 @@
 # RAG com Python, LangChain e Pinecone
 
-Este projeto demonstra um pipeline de Retrieval Augmented Generation (RAG) usando Python. Ele carrega documentos de várias fontes, os divide em chunks e os prepara para a vetorização (embedding) e armazenamento em um banco de dados vetorial Pinecone.
+Este projeto demonstra um pipeline de Retrieval Augmented Generation (RAG) usando Python. Ele carrega documentos de várias fontes, os divide em chunks` e os prepara para a vetorização (embedding) e armazenamento em um banco de dados vetorial Pinecone.
 
 O projeto está estruturado em dois notebooks Jupyter principais:
 -   [main.ipynb](main.ipynb): Responsável pelo carregamento de documentos (PDFs, DOCX, Wikipedia), divisão do texto em chunks e cálculo do custo de embedding.
