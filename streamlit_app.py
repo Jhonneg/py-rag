@@ -1,9 +1,11 @@
 import os
-from click import prompt
-from pinecone import Pinecone
-from pinecone import ServerlessSpec
+from pinecone import Pinecone, ServerlessSpec
 import streamlit as st
 from dotenv import load_dotenv, find_dotenv
+
+from dotenv import load_dotenv, find_dotenv
+
+load_dotenv(find_dotenv(), override=True)
 
 pc = Pinecone()
 
@@ -87,3 +89,8 @@ print(chunks[10].page_content)
 print_embedding_cost(chunks)
 index_name = "askadocument"
 vector_store = insert_or_fetch_embeddings(index_name, chunks)
+
+# Streamlit
+
+st.subheader("PDF RAG Demo")
+img = st.file_uploader("Upload PDF or DOCX ", type=["pdf", "docx"])
