@@ -1,9 +1,8 @@
-import os
 from pinecone import Pinecone, ServerlessSpec
 import streamlit as st
 from dotenv import load_dotenv, find_dotenv
+from pathlib import Path
 
-from dotenv import load_dotenv, find_dotenv
 
 load_dotenv(find_dotenv(), override=True)
 
@@ -11,8 +10,8 @@ pc = Pinecone()
 
 
 def load_document(file):
-    name, extension = os.path.splitext(file)
-
+    extension = st.write(Path(file.name).suffix)
+    print(extension)
     if extension == ".pdf":
         from langchain_classic.document_loaders import PyPDFLoader
 
@@ -55,7 +54,6 @@ def insert_or_fetch_embeddings(index_name, chunks):
     # from langchain_community.vectorstores import Pinecone
     from langchain_pinecone.vectorstores import Pinecone
     from langchain_openai import OpenAIEmbeddings
-    from pinecone import ServerlessSpec
 
     pc = pinecone.Pinecone()
     embeddings = OpenAIEmbeddings(model="text-embedding-3-small", dimensions=1536)
@@ -78,19 +76,26 @@ def insert_or_fetch_embeddings(index_name, chunks):
         print("Ok")
         return vector_store
 
-data = load_document("pdfs/guia_lgpd.pdf")
+
+# data = load_document("pdfs/guia_lgpd.pdf")
 # print(data[1].page_content)
 
-print(f"You have {len(data)} pages in your data")
+# print(f"You have {len(data)} pages in your data")
 
-chunks = chunk_data(data)
-print(len(chunks))
-print(chunks[10].page_content)
-print_embedding_cost(chunks)
+# chunks = chunk_data(data)
+
 index_name = "askadocument"
-vector_store = insert_or_fetch_embeddings(index_name, chunks)
+# vector_store = insert_or_fetch_embeddings(index_name, chunks)
 
-# Streamlit
+
+# --------Streamlit---------
 
 st.subheader("PDF RAG Demo")
-img = st.file_uploader("Upload PDF or DOCX ", type=["pdf", "docx"])
+file = st.file_uploader("Upload PDF or DOCX ", type=["pdf", "docx"])
+if file is not None:
+    rag_file = load_document(file)
+    string_data = rag_file.read()
+    st.write(string_data)
+    st.text_area(f"Your file has {len(rag_file)} pages")
+# else:
+#     st.text_area("Unsupported format")
