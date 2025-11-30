@@ -15,6 +15,7 @@ from langchain_classic.chains.conversational_retrieval.base import (
     ConversationalRetrievalChain,
 )
 from langchain_classic.memory import ConversationBufferMemory
+from sympy import content
 
 
 load_dotenv(find_dotenv(), override=True)
@@ -22,7 +23,9 @@ load_dotenv(find_dotenv(), override=True)
 pc = Pinecone()
 
 
+# -----------------Util functions-----------------
 # Doc loading
+@st.cache_data
 def load_document(file):
     extension = Path(file).suffix
     if extension == ".pdf":
@@ -99,31 +102,30 @@ def insert_or_fetch_embeddings(index_name, chunks):
         return vector_store
 
 
-def ask_and_get_answer(vector_store, q):
-    from langchain_classic.chains.retrieval_qa.base import RetrievalQA
+# Create CRC
+def chat_with_history(vector_store):
+    from langchain_core.prompts import ChatPromptTemplate, MessagesPlaceholder
 
-    llm = ChatOpenAI(temperature=1)
-
+    llm = ChatOpenAI(model="gpt-5", temperature=0)
     retriever = vector_store.as_retriever(
-        search_type="similarity", search_kwargs={"k": 5}
+        search_type="similarity", search_kwards={"k": 5}
     )
+    # prompt = ChatPromptTemplate.from_messages(
+    #     [
+    #         MessagesPlaceholder(variable_name="chat_history"),
+    #         ("user", "{input}"),
+    #         (
+    #             "user",
+    #             "Given the above conversation, generate a search query to look up in order to get information relevant to the conversation",
+    #         ),
+    #     ]
+    # )
+    memory = ConversationBufferMemory(memory_key="chat_history", return_messages=True)
 
-    chain = RetrievalQA.from_chain_type(
-        llm=llm, chain_type="stuff", retriever=retriever
+    crc = ConversationalRetrievalChain.from_llm(
+        llm=llm, retriever=retriever, memory=memory, chain_type="stuff", verbose=True
     )
-    answer = chain.invoke(q)
-    return answer
-
-
-# Conversation history
-
-# llm = ChatOpenAI(model="gpt-5", temperature=0)
-# retriever = vector_store.as_retriever(search_type="similarity", search_kwards={"k": 5})
-# memory = ConversationBufferMemory(memory_key="chat_history", return_messages=True)
-
-# crc = ConversationalRetrievalChain.from_llm(
-#     llm=llm, retriever=retriever, memory=memory, chain_type="stuff", verbose=True
-# )
+    return crc
 
 
 # -------- Streamlit ---------
@@ -149,22 +151,20 @@ if file is not None:
     index_name = "askadocument"
     vector_store = insert_or_fetch_embeddings(index_name, chunks)
 
-    q = st.text_input("Ask the document anything")
-    with st.spinner("Loading..."):
-        answer = ask_and_get_answer(vector_store, q)
-        st.text_area("Response: ", value=answer["result"])
-
-    st.divider()
-    if "history" not in st.session_state:
-        st.session_state.history = ""
-        
-    # Chat history
-    # llm = ChatOpenAI(model="gpt-5", temperature=0)
-    # retriever = vector_store.as_retriever(
-    #     search_type="similarity", search_kwards={"k": 5}
-    # )
-    # memory = ConversationBufferMemory(memory_key="chat_history", return_messages=True)
-
-    # crc = ConversationalRetrievalChain.from_llm(
-    #     llm=llm, retriever=retriever, memory=memory, chain_type="stuff", verbose=True
-    # )
+    question = st.chat_input("Ask the document anything")
+    if question:
+        with st.spinner("Loading"):
+            if "history" not in st.session_state:
+                st.session_state.history = ""
+            crc = chat_with_history(vector_store)
+            answer = crc.invoke(
+                {"chat_history": st.session_state.history, "question": question}
+            )
+            value = f"Q: {question} \n\n A: {answer['answer']}"
+            st.session_state.history = (
+                f"{value} \n\n {'-' * 100} \n\n {st.session_state.history}"
+            )
+            h = st.session_state.history
+            st.text_area("Response: ", value=answer["answer"])
+            st.divider()
+            st.text_area(label="Chat history", value=h, height=400, key="history")
