@@ -10,6 +10,11 @@ from langchain_classic.chains.conversational_retrieval.base import (
     ConversationalRetrievalChain,
 )
 from langchain_classic.memory import ConversationBufferMemory
+from langchain_openai import ChatOpenAI
+from langchain_classic.chains.conversational_retrieval.base import (
+    ConversationalRetrievalChain,
+)
+from langchain_classic.memory import ConversationBufferMemory
 
 
 load_dotenv(find_dotenv(), override=True)
@@ -58,6 +63,7 @@ def print_embedding_cost(texts):
     total_tokens = sum([len(enc.encode(page.page_content)) for page in texts])
     print(f"Total Tokens: {total_tokens}")
     print(f"Embedding Cost in USD: {total_tokens / 1000 * 0.00002:.6f}")
+    return total_tokens
 
 
 # Create or load vector db
@@ -77,6 +83,7 @@ def insert_or_fetch_embeddings(index_name, chunks):
         print(f"Index {index_name} already exists. Loading embeddings...", end="")
         vector_store = Pinecone.from_existing_index(index_name, embeddings)
         print("Ok")
+        return vector_store
     else:
         print(f"Creating index {index_name} and embeddings...", end="")
         pc.create_index(
@@ -92,8 +99,20 @@ def insert_or_fetch_embeddings(index_name, chunks):
         return vector_store
 
 
-index_name = "askadocument"
-# vector_store = insert_or_fetch_embeddings(index_name, chunks)
+def ask_and_get_answer(vector_store, q):
+    from langchain_classic.chains.retrieval_qa.base import RetrievalQA
+
+    llm = ChatOpenAI(temperature=1)
+
+    retriever = vector_store.as_retriever(
+        search_type="similarity", search_kwargs={"k": 5}
+    )
+
+    chain = RetrievalQA.from_chain_type(
+        llm=llm, chain_type="stuff", retriever=retriever
+    )
+    answer = chain.invoke(q)
+    return answer
 
 
 # Conversation history
@@ -107,11 +126,7 @@ index_name = "askadocument"
 # )
 
 
-# data = load_document("pdfs/guia_lgpd.pdf")
-# print(data[1].page_content)
-
-
-# --------Streamlit---------
+# -------- Streamlit ---------
 
 working_dir = os.getcwd()
 
@@ -130,4 +145,26 @@ if file is not None:
     st.write(f"Your file has {len(data)} pages")
     chunks = chunk_data(data)
     embed_cost = print_embedding_cost(chunks)
-    st.write(f"This document will cost {embed_cost} to embed")
+    st.write(f"This document will cost {embed_cost / 1000 * 0.00002:.6f}USD to embed")
+    index_name = "askadocument"
+    vector_store = insert_or_fetch_embeddings(index_name, chunks)
+
+    q = st.text_input("Ask the document anything")
+    with st.spinner("Loading..."):
+        answer = ask_and_get_answer(vector_store, q)
+        st.text_area("Response: ", value=answer["result"])
+
+    st.divider()
+    if "history" not in st.session_state:
+        st.session_state.history = ""
+        
+    # Chat history
+    # llm = ChatOpenAI(model="gpt-5", temperature=0)
+    # retriever = vector_store.as_retriever(
+    #     search_type="similarity", search_kwards={"k": 5}
+    # )
+    # memory = ConversationBufferMemory(memory_key="chat_history", return_messages=True)
+
+    # crc = ConversationalRetrievalChain.from_llm(
+    #     llm=llm, retriever=retriever, memory=memory, chain_type="stuff", verbose=True
+    # )
