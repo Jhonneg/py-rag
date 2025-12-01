@@ -1,21 +1,34 @@
 # RAG with Python, LangChain, and Vector Databases
 
-This project demonstrates a Retrieval-Augmented Generation (RAG) pipeline using Python and LangChain. It loads documents from various sources, splits them into manageable chunks, creates vector embeddings, and stores them in a vector database like Pinecone or ChromaDB for efficient retrieval.
-
-The project is structured into two main Jupyter notebooks:
-
--   [main.ipynb](main.ipynb): Handles document loading (PDFs, DOCX, Wikipedia), text chunking, embedding cost calculation, and interaction with a ChromaDB vector store.
--   [pinecone.ipynb](pinecone.ipynb): Manages all interactions with the Pinecone vector database, including index creation, upserting vectors, querying, and deleting.
+This project demonstrates a Retrieval-Augmented Generation (RAG) pipeline using Python, LangChain, and OpenAI. It can load PDF documents, create vector embeddings, and store them in a vector database like ChromaDB or Pinecone for efficient retrieval and question-answering. The project includes Jupyter notebooks for development and a Streamlit application for an interactive user interface.
 
 ## Features
 
--   **Document Loading**: Load documents from local PDF files.
--   **Text Chunking**: Split documents into smaller chunks suitable for embedding.
--   **Vector Embeddings**: Create vector representations of text chunks using OpenAI's models.
--   **Cost Estimation**: Calculate the estimated cost for generating embeddings.
--   **Vector Storage**: Integrate with both [ChromaDB](https://www.trychroma.com/) and [Pinecone](https://www.pinecone.io/) for vector storage and retrieval.
+-   **Document Loading**: Load and process text from local PDF files.
+-   **Text Chunking**: Split documents into smaller, manageable chunks suitable for embedding.
+-   **Vector Embeddings**: Generate vector embeddings using OpenAI's models.
+-   **Vector Storage**:
+    -   [ChromaDB](https://www.trychroma.com/) for local, persistent vector storage.
+    -   [Pinecone](https://www.pinecone.io/) for a cloud-based, scalable vector database.
+-   **Conversational Interface**: Ask questions about the loaded documents through a Streamlit web app.
+-   **Cost Estimation**: Provides an estimated cost for generating embeddings before processing.
+
+## Project Structure
+
+```
+.
+├── .env                  # Environment variables (API keys)
+├── main.ipynb            # Jupyter notebook for ChromaDB workflow
+├── pinecone.ipynb        # Jupyter notebook for Pinecone management
+├── streamlit_app.py      # The Streamlit web application
+├── requirements.txt      # Python dependencies
+├── pdfs/                 # Directory for your PDF documents
+└── chroma_db/            # Local storage for ChromaDB
+```
 
 ## Setup
+
+Follow these steps to set up and run the project locally.
 
 1.  **Clone the Repository**
     ```sh
@@ -25,49 +38,48 @@ The project is structured into two main Jupyter notebooks:
 
 2.  **Create and Activate a Virtual Environment**
     ```sh
-    python -m venv venv
+    # For macOS/Linux
+    python3 -m venv venv
     source venv/bin/activate
+
+    # For Windows
+    python -m venv venv
+    .\venv\Scripts\activate
     ```
 
 3.  **Install Dependencies**
-    Install the required packages by running the `pip install` cells within the [main.ipynb](main.ipynb) and [pinecone.ipynb](pinecone.ipynb) notebooks, or install them from the `requirements.txt` file:
+    Install the required packages from the `requirements.txt` file.
     ```sh
     pip install -r requirements.txt
     ```
 
 4.  **Environment Variables**
-    Create a `.env` file in the project root and add your API keys. This file is included in `.gitignore` and will not be committed.
+    Create a `.env` file in the root directory and add your API keys. This file is ignored by Git.
     ```
     # .env
-    PINECONE_API_KEY="your_pinecone_api_key"
     OPENAI_API_KEY="your_openai_api_key"
+    PINECONE_API_KEY="your_pinecone_api_key"
     ```
 
 5.  **Add Documents**
-    Place your PDF files inside the `pdfs/` directory.
+    Place the PDF files you want to process inside the `pdfs/` directory.
 
 ## Usage
 
-1.  **Process Documents and Use ChromaDB**:
-    Open and run the cells in [main.ipynb](main.ipynb) to load documents, split them into chunks, and store the embeddings in a local ChromaDB database.
+You can interact with this project using the Jupyter notebooks or the Streamlit web application.
 
-2.  **Manage Vector Database**: Open and run the cells in [pinecone.ipynb](pinecone.ipynb) to set up your Pinecone index and (in a future step) upload the document vectors.
+### 1. Jupyter Notebooks
 
-## Demo 
+-   **[main.ipynb](main.ipynb)**: Use this notebook to step through the process of loading documents, chunking them, and storing the embeddings in a local ChromaDB instance.
+-   **[pinecone.ipynb](pinecone.ipynb)**: This notebook demonstrates how to create, manage, and query a Pinecone index for your vector embeddings.
 
-<div align=center>
+### 2. Streamlit Application
 
-**Question and Answer demo**
+For an interactive experience, run the Streamlit app. This allows you to upload a document and ask questions about its content.
 
-<img width="1632" height="403" alt="screenshot-2025-11-24_08-39-35" src="https://github.com/user-attachments/assets/6c97cd02-cedd-4604-ac70-8fae90d66b8b" />
-
-**Answering document specific questions**
-
-<img width="1254" height="558" alt="image" src="https://github.com/user-attachments/assets/24e88bd7-3cf4-4b37-b872-ad525c57d0a9" />
-
-**Chat history demo**
-
-<img width="1829" height="279" alt="screenshot-2025-11-24_08-43-51" src="https://github.com/user-attachments/assets/b0a56913-6b3b-4f4a-829f-417c8eafce6e" />
-
-</div>
-
+1.  Launch the application from your terminal:
+    ```sh
+    streamlit run streamlit_app.py
+    ```
+2.  Open your web browser to the local URL provided by Streamlit.
+3.  Upload a PDF document and start asking questions.

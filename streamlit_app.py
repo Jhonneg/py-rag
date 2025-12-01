@@ -15,7 +15,6 @@ from langchain_classic.chains.conversational_retrieval.base import (
     ConversationalRetrievalChain,
 )
 from langchain_classic.memory import ConversationBufferMemory
-from sympy import content
 
 
 load_dotenv(find_dotenv(), override=True)

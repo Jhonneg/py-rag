@@ -1,76 +1,85 @@
 # RAG com Python, LangChain e Bancos de Dados Vetoriais
 
-Este projeto demonstra um pipeline de Retrieval Augmented Generantion (RAG) usando Python e LangChain. Ele carrega documentos de várias fontes, divide-os em partes gerenciáveis (chunks), cria embeddings vetoriais e os armazena em um banco de dados vetorial como Pinecone ou ChromaDB para recuperação eficiente.
-
-O projeto está estruturado em dois notebooks Jupyter principais:
-
--   [main.ipynb](main.ipynb): Lida com o carregamento de documentos (PDFs, DOCX, Wikipedia), divisão do texto, cálculo de custo de embedding e interação com um banco de dados vetorial ChromaDB.
--   [pinecone.ipynb](pinecone.ipynb): Gerencia todas as interações com o banco de dados vetorial Pinecone, incluindo criação de índices, inserção de vetores, consultas e exclusão.
+Este projeto demonstra um pipeline de Retrieval-Augmented Generation (RAG) usando Python, LangChain e OpenAI. Ele pode carregar documentos PDF, criar embeddings vetoriais e armazená-los em um banco de dados vetorial como ChromaDB ou Pinecone para recuperação eficiente e resposta a perguntas. O projeto inclui notebooks Jupyter para desenvolvimento e uma aplicação Streamlit para uma interface de usuário interativa.
 
 ## Funcionalidades
 
--   **Carregamento de Documentos**: Carrega documentos de arquivos PDF locais.
--   **Divisão de Texto**: Divide documentos em pedaços menores, adequados para embedding.
--   **Embeddings Vetoriais**: Cria representações vetoriais de trechos de texto usando os modelos da OpenAI.
--   **Estimativa de Custo**: Calcula o custo estimado para gerar os embeddings.
--   **Armazenamento Vetorial**: Integra-se tanto com o [ChromaDB](https://www.trychroma.com/) quanto com o [Pinecone](https://www.pinecone.io/) para armazenamento e recuperação de vetores.
+-   **Carregamento de Documentos**: Carrega e processa texto de arquivos PDF locais.
+-   **Divisão de Texto**: Divide documentos em pedaços menores e gerenciáveis, adequados para embedding.
+-   **Embeddings Vetoriais**: Gera embeddings vetoriais usando os modelos da OpenAI.
+-   **Armazenamento Vetorial**:
+    -   [ChromaDB](https://www.trychroma.com/) para armazenamento vetorial local e persistente.
+    -   [Pinecone](https://www.pinecone.io/) para um banco de dados vetorial escalável e baseado em nuvem.
+-   **Interface Conversacional**: Faça perguntas sobre os documentos carregados através de uma aplicação web Streamlit.
+-   **Estimativa de Custo**: Fornece um custo estimado para gerar os embeddings antes do processamento.
+
+## Estrutura do Projeto
+
+```
+.
+├── .env                  # Variáveis de ambiente (chaves de API)
+├── main.ipynb            # Notebook Jupyter para o fluxo de trabalho com ChromaDB
+├── pinecone.ipynb        # Notebook Jupyter para gerenciamento do Pinecone
+├── streamlit_app.py      # A aplicação web Streamlit
+├── requirements.txt      # Dependências Python
+├── pdfs/                 # Diretório para seus documentos PDF
+└── chroma_db/            # Armazenamento local para ChromaDB
+```
 
 ## Configuração
 
-1.  **Clone o Repositório**
+Siga estes passos para configurar e executar o projeto localmente.
+
+1.  **Clonar o Repositório**
     ```sh
     git clone <url-do-repositorio>
     cd <nome-do-repositorio>
     ```
 
-2.  **Crie e Ative um Ambiente Virtual**
+2.  **Criar e Ativar um Ambiente Virtual**
     ```sh
+    # Para macOS/Linux
+    python3 -m venv venv
+    source venv/bin/activate
+
+    # Para Windows
     python -m venv venv
-    source venv/bin/activate 
+    .\venv\Scripts\activate
     ```
 
-3.  **Instale as Dependências**
-    Instale os pacotes necessários executando as células de `pip install` dentro dos notebooks [main.ipynb](main.ipynb) e [pinecone.ipynb](pinecone.ipynb), ou instale-os a partir do arquivo `requirements.txt`:
+3.  **Instalar Dependências**
+    Instale os pacotes necessários a partir do arquivo `requirements.txt`.
     ```sh
     pip install -r requirements.txt
     ```
 
 4.  **Variáveis de Ambiente**
-    Crie um arquivo `.env` na raiz do projeto e adicione suas chaves de API. Este arquivo está incluído no `.gitignore` e não será enviado para o repositório.
+    Crie um arquivo `.env` no diretório raiz e adicione suas chaves de API. Este arquivo é ignorado pelo Git.
     ```
     # .env
-    PINECONE_API_KEY="sua_chave_de_api_do_pinecone"
-    OPENAI_API_KEY="sua_chave_de_api_da_openai"
+    OPENAI_API_KEY="sua_chave_de_api_openai"
+    PINECONE_API_KEY="sua_chave_de_api_pinecone"
     ```
 
-5.  **Adicione os Documentos**
-    Coloque seus arquivos PDF dentro do diretório `pdfs/`.
+5.  **Adicionar Documentos**
+    Coloque os arquivos PDF que você deseja processar dentro do diretório `pdfs/`.
 
 ## Uso
 
-1.  **Processar Documentos e Usar o ChromaDB**:
-    Abra e execute as células no [main.ipynb](main.ipynb) para carregar os documentos, dividi-los em pedaços e armazenar os embeddings em um banco de dados local do ChromaDB.
+Você pode interagir com este projeto usando os notebooks Jupyter ou a aplicação web Streamlit.
 
+### 1. Notebooks Jupyter
 
-2.  **Gerenciar Banco de Dados Vetorial**: Abra e execute as células no [pinecone.ipynb](pinecone.ipynb) para configurar seu índice no Pinecone e (em um passo futuro) carregar os vetores dos documentos.
- 
-## Demo 
-<div align=center >
-    
+-   **[main.ipynb](main.ipynb)**: Use este notebook para percorrer o processo de carregamento de documentos, dividi-los em pedaços e armazenar os embeddings em uma instância local do ChromaDB.
+-   **[pinecone.ipynb](pinecone.ipynb)**: Este notebook demonstra como criar, gerenciar e consultar um índice Pinecone para seus embeddings vetoriais.
 
-**Pergunda e resposta**
+### 2. Aplicação Streamlit
 
-<img width="1632" height="403" alt="screenshot-2025-11-24_08-39-35" src="https://github.com/user-attachments/assets/6c97cd02-cedd-4604-ac70-8fae90d66b8b" />
+Para uma experiência interativa, execute a aplicação Streamlit. Isso permite que você carregue um documento e faça perguntas sobre o conteúdo dele.
 
-**Respondendo perguntas especificas ao documento**
-
-<img width="1254" height="558" alt="image" src="https://github.com/user-attachments/assets/a0c67e43-243c-4993-ae53-37a83284810c" />
-
-**Historico do chat**
-
-<img width="1829" height="279" alt="screenshot-2025-11-24_08-43-51" src="https://github.com/user-attachments/assets/b0a56913-6b3b-4f4a-829f-417c8eafce6e" />
-
-
-</div>
-
-
+1.  Inicie a aplicação a partir do seu terminal:
+    ```sh
+    streamlit run streamlit_app.py
+    ```
+2.  Abra seu navegador na URL local fornecida pelo Streamlit.
+3.  Carregue um documento PDF e comece a fazer perguntas.
