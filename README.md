@@ -83,3 +83,9 @@ For an interactive experience, run the Streamlit app. This allows you to upload 
     ```
 2.  Open your web browser to the local URL provided by Streamlit.
 3.  Upload a PDF document and start asking questions.
+
+# Demo 
+
+https://github.com/user-attachments/assets/854c6cb5-f96e-4f12-a4bb-49464491a077
+
+
